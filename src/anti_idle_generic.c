@@ -62,7 +62,7 @@ int zmk_anti_idle_get_state(bool *on_off) {
 #if IS_ENABLED(CONFIG_ZMK_ANTI_IDLE_SHARED_ENDPOINT_CONFIGURATION)
     *on_off = state.on;
 #else 
-    struct zmk_endpoint_instance endpoint_instance = zmk_endpoints_selected();
+    struct zmk_endpoint_instance endpoint_instance = zmk_endpoint_get_selected();
     int endpoint_index = zmk_endpoint_instance_to_index(endpoint_instance);
     *on_off = state[endpoint_index].on;
 #endif // IS_ENABLED(CONFIG_ZMK_ANTI_IDLE_SHARED_ENDPOINT_CONFIGURATION)
@@ -74,7 +74,7 @@ int zmk_anti_idle_set_state(bool on_off) {
     state.on = on_off;
     LOG_DBG("anti-idle state set to %s for shared", on_off ? "on" : "off");
 #else
-    struct zmk_endpoint_instance endpoint_instance = zmk_endpoints_selected();
+    struct zmk_endpoint_instance endpoint_instance = zmk_endpoint_get_selected();
     int endpoint_index = zmk_endpoint_instance_to_index(endpoint_instance);
     state[endpoint_index].on = on_off;
     LOG_DBG("anti-idle state set to %s for endpoint %d", on_off ? "on" : "off", endpoint_index);
@@ -84,7 +84,7 @@ int zmk_anti_idle_set_state(bool on_off) {
 
 #if IS_ENABLED(CONFIG_ZMK_ANTI_IDLE_ENABLE_ONLY_CONNECTED)
 static bool anti_idle_is_endpoint_connected(void) {
-    enum zmk_transport transport = zmk_endpoints_selected().transport;
+    enum zmk_transport transport = zmk_endpoint_get_selected().transport;
 
     switch (transport) {
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
